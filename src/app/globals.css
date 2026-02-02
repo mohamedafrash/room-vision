@@ -2,20 +2,35 @@
 
 :root {
   color-scheme: dark;
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: var(--font-space), system-ui, -apple-system, sans-serif;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  font-family:
+    var(--font-space),
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: #f3f2f0;
   background-color: #0b0b0c;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 
 h1,
@@ -27,17 +42,39 @@ h3,
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 ::selection {
   background: rgba(231, 123, 70, 0.5);
 }
 
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 .app-shell {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
-  background: radial-gradient(circle at top, rgba(245, 233, 222, 0.08), transparent 45%),
+  background:
+    radial-gradient(circle at top, rgba(245, 233, 222, 0.08), transparent 45%),
     linear-gradient(145deg, #0b0b0c 0%, #131116 35%, #0e1416 100%);
 }
 
@@ -46,7 +83,14 @@ h3,
   z-index: 2;
   margin: 0 auto;
   max-width: 1200px;
-  padding: 24px clamp(20px, 4vw, 56px) 80px;
+  padding: 16px clamp(16px, 4vw, 56px)
+    calc(60px + var(--safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .app-container {
+    padding: 24px clamp(20px, 4vw, 56px) 80px;
+  }
 }
 
 .glow-orb {
@@ -55,23 +99,50 @@ h3,
   opacity: 0.75;
   mix-blend-mode: screen;
   animation: float 14s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .orb-left {
-  width: 420px;
-  height: 420px;
-  left: -120px;
-  top: -80px;
-  background: radial-gradient(circle, rgba(255, 214, 170, 0.5), transparent 65%);
+  width: 280px;
+  height: 280px;
+  left: -80px;
+  top: -60px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 170, 0.5),
+    transparent 65%
+  );
+}
+
+@media (min-width: 640px) {
+  .orb-left {
+    width: 420px;
+    height: 420px;
+    left: -120px;
+    top: -80px;
+  }
 }
 
 .orb-right {
-  width: 360px;
-  height: 360px;
-  right: -100px;
-  bottom: -120px;
-  background: radial-gradient(circle, rgba(140, 217, 213, 0.45), transparent 65%);
+  width: 240px;
+  height: 240px;
+  right: -60px;
+  bottom: -80px;
+  background: radial-gradient(
+    circle,
+    rgba(140, 217, 213, 0.45),
+    transparent 65%
+  );
   animation-delay: 3s;
+}
+
+@media (min-width: 640px) {
+  .orb-right {
+    width: 360px;
+    height: 360px;
+    right: -100px;
+    bottom: -120px;
+  }
 }
 
 .noise-layer {
@@ -84,28 +155,50 @@ h3,
 }
 
 .glass-card {
-  border-radius: 28px;
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.01)
+  );
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   animation: fadeUp 0.6s ease both;
 }
 
+@media (min-width: 640px) {
+  .glass-card {
+    border-radius: 28px;
+  }
+}
+
 .glass-stage {
-  border-radius: 32px;
+  border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.01)
+  );
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@media (min-width: 640px) {
+  .glass-stage {
+    border-radius: 32px;
+  }
 }
 
 .toast {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 30;
-  max-width: 360px;
+  right: 16px;
+  bottom: calc(16px + var(--safe-area-inset-bottom));
+  z-index: 50;
+  max-width: calc(100vw - 32px);
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(231, 78, 78, 0.9);
@@ -115,6 +208,14 @@ h3,
   font-weight: 600;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   animation: fadeUp 0.4s ease both;
+}
+
+@media (min-width: 640px) {
+  .toast {
+    right: 24px;
+    bottom: 24px;
+    max-width: 360px;
+  }
 }
 
 @keyframes float {
@@ -138,22 +239,63 @@ h3,
   }
 }
 
-@media (max-width: 1024px) {
-  .app-container {
-    padding-bottom: 60px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-@media (max-width: 640px) {
-  .glass-stage {
-    height: 420px;
-  }
+/* For the mobile hint in ImageCompare */
+.animate-fade-in-delayed {
+  animation: fadeIn 0.5s ease 2s forwards;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid rgba(231, 123, 70, 0.8);
+  outline-offset: 2px;
+}
+
+/* Touch action utilities */
+.touch-none {
+  touch-action: none;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+.touch-pan-x {
+  touch-action: pan-x;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glow-orb,
-  .glass-card,
-  .toast {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
+}
+
+/* Improve input appearance on iOS */
+input,
+textarea,
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* Safe area padding for bottom navigation on iOS */
+.pb-safe {
+  padding-bottom: var(--safe-area-inset-bottom);
 }

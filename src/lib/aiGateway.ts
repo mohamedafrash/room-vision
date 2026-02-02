@@ -2,12 +2,13 @@ import { GEMINI_MODEL_NAME } from './types';
 
 interface GenerateResponse {
   image: string;
+  remaining_generations?: number;
 }
 
 export const generateRoomVisualization = async (
   imageBase64: string,
   prompt: string
-): Promise<string> => {
+): Promise<GenerateResponse> => {
   const response = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -32,5 +33,5 @@ export const generateRoomVisualization = async (
     throw new Error('No image data returned.');
   }
 
-  return data.image;
+  return data;
 };

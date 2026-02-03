@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
       <div className="flex items-center gap-3">
         <Link href="/pricing">
-          <SubscriptionBadge planId={planId} />
+          <SubscriptionBadge planId={planId} as="span" />
         </Link>
         <Button variant="ghost" onClick={onToggleHistory}>
           {isHistoryVisible ? "Hide archive" : "Show archive"}

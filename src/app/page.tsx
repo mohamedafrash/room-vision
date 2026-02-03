@@ -34,6 +34,17 @@ const PROMPT_SUGGESTIONS = [
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Something went wrong.";
 
+const isRateLimitError = (error: unknown, errorMessage: string) => {
+  if (error && typeof error === "object") {
+    const maybeError = error as { code?: unknown; isRateLimited?: unknown };
+    if (maybeError.code === "RATE_LIMITED") return true;
+    if (maybeError.isRateLimited === true) return true;
+  }
+
+  const normalized = errorMessage.toLowerCase();
+  return normalized.includes("rate limit") || normalized.includes("rate-limited");
+};
+
 // Toast notification interface
 interface ToastNotification {
   message: string;
@@ -240,7 +251,7 @@ export default function HomePage() {
         showToast(errorMessage || "Generation failed", "error");
 
         // Show upgrade prompt if rate limited
-        if (errorMessage.includes("Rate limit")) {
+        if (isRateLimitError(error, errorMessage)) {
           setShowUpgradePrompt(true);
         }
       }

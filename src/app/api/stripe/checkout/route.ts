@@ -2,8 +2,17 @@ import { NextResponse } from "next/server";
 import { stripe, PLANS, PlanId } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 
+const getAppUrl = () => {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) {
+    throw new Error("NEXT_PUBLIC_APP_URL is not set");
+  }
+  return appUrl;
+};
+
 export async function POST(request: Request) {
   try {
+    const appUrl = getAppUrl();
     const supabase = await createClient();
     const {
       data: { user },
@@ -46,17 +55,20 @@ export async function POST(request: Request) {
       customerId = customer.id;
 
       // Create subscription record for the user
-      await supabase.from("subscriptions").insert({
-        user_id: user.id,
-        stripe_customer_id: customerId,
-        plan_id: "free",
-        status: "incomplete",
-      });
+      await supabase.from("subscriptions").upsert(
+        {
+          user_id: user.id,
+          stripe_customer_id: customerId,
+          plan_id: "free",
+          status: "incomplete",
+        },
+        { onConflict: "user_id" },
+      );
     } else if (existingSubscriptionId && activeStatuses.has(existingStatus)) {
       // Avoid creating a second subscription; send user to billing portal instead.
       const portalSession = await stripe.billingPortal.sessions.create({
         customer: customerId,
-        return_url: process.env.NEXT_PUBLIC_APP_URL!,
+        return_url: appUrl,
       });
       return NextResponse.json({ url: portalSession.url });
     }
@@ -65,8 +77,8 @@ export async function POST(request: Request) {
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: plan.priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
+      success_url: `${appUrl}/?success=true`,
+      cancel_url: `${appUrl}/?canceled=true`,
       subscription_data: {
         metadata: { userId: user.id, planId },
       },

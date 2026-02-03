@@ -58,7 +58,9 @@ export async function POST(request: Request) {
         const periodEnd = subscriptionItem?.current_period_end;
 
         if (userId) {
-          await supabaseAdmin.from("subscriptions").upsert(
+          const { error: upsertError } = await supabaseAdmin
+            .from("subscriptions")
+            .upsert(
             {
               user_id: userId,
               stripe_customer_id: subscription.customer as string,
@@ -75,6 +77,14 @@ export async function POST(request: Request) {
             },
             { onConflict: "user_id" },
           );
+          if (upsertError) {
+            console.error(
+              "Failed to upsert subscription from webhook:",
+              upsertError,
+              { subscriptionId: subscription.id },
+            );
+            throw upsertError;
+          }
           console.log(
             `Subscription ${subscription.id} updated for user ${userId}: ${planId}`,
           );

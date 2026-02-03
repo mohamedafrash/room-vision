@@ -34,19 +34,28 @@ export async function POST(request: Request) {
     }
 
     // 2. Fetch user subscription tier
-    const { data: subscription } = await supabase
+    const { data: subscription, error: subscriptionError } = await supabase
       .from("subscriptions")
       .select("plan_id, status")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
+
+    if (subscriptionError) {
+      console.error("Failed to load subscription:", subscriptionError);
+    }
 
     const isActive =
       subscription?.status === "active" || subscription?.status === "trialing";
-    const planId = (isActive ? subscription?.plan_id : "free") as PlanId;
-    const plan = PLANS[planId];
+    const isValidPlanId = (value: unknown): value is PlanId =>
+      typeof value === "string" && value in PLANS;
+    const planId: PlanId =
+      isActive && isValidPlanId(subscription?.plan_id)
+        ? subscription.plan_id
+        : "free";
+    const plan = PLANS[planId] ?? PLANS.free;
 
     // 3. Check rate limit based on subscription tier
-    const { success, remaining } = await checkRateLimit(user.id, planId);
+    const { success, remaining } = await checkRateLimit(user.id, plan.id);
     if (!success) {
       return NextResponse.json(
         {

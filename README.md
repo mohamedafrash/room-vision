@@ -6,6 +6,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?style=flat-square&logo=tailwindcss)
 ![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20Storage-3ecf8e?style=flat-square&logo=supabase)
+![Stripe](https://img.shields.io/badge/Stripe-Subscriptions-635bff?style=flat-square&logo=stripe)
 
 ## Features
 
@@ -15,7 +16,8 @@
 - 📱 **Mobile Optimized** – Responsive design with touch-friendly controls
 - 🔐 **Secure Authentication** – Google OAuth & email/password via Supabase
 - 📊 **Generation History** – All your designs saved and accessible
-- ⚡ **Rate Limiting** – 10 free generations per day via Upstash Redis
+- 💳 **Subscription Plans** – Free, Pro, and Unlimited tiers via Stripe
+- ⚡ **Tiered Rate Limiting** – Free: 10/day, Pro: 100/day, Unlimited: ∞
 
 ## Tech Stack
 
@@ -28,6 +30,7 @@
 | Database       | Supabase Postgres (with RLS)            |
 | AI             | Vercel AI SDK + Google Gemini 2.5 Flash |
 | Rate Limiting  | Upstash Redis                           |
+| Payments       | Stripe (Subscriptions + Billing Portal) |
 
 ## Quick Start
 
@@ -55,6 +58,14 @@ AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key
 # Rate Limiting (Upstash)
 UPSTASH_REDIS_REST_URL=your_upstash_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+
+# Stripe Subscriptions
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRO_PRICE_ID=price_...
+STRIPE_UNLIMITED_PRICE_ID=price_...
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### 3. Database Setup
@@ -65,7 +76,13 @@ Run the migrations to set up the database schema:
 supabase db push
 ```
 
-### 4. Run Development Server
+### 4. Stripe Webhook (Local Development)
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+### 5. Run Development Server
 
 ```bash
 pnpm dev
@@ -73,33 +90,48 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
+## Subscription Plans
+
+| Plan      | Price     | Generations/Day |
+| --------- | --------- | --------------- |
+| Free      | $0/month  | 10              |
+| Pro       | $9/month  | 100             |
+| Unlimited | $29/month | Unlimited       |
+
 ## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── api/generate/    # AI generation endpoint
-│   ├── auth/callback/   # OAuth callback handler
-│   ├── login/           # Login page
-│   ├── signup/          # Signup page
-│   └── page.tsx         # Main app
+│   ├── api/
+│   │   ├── generate/         # AI generation endpoint
+│   │   └── stripe/           # Checkout, webhooks, portal
+│   ├── auth/callback/        # OAuth callback handler
+│   ├── login/                # Login page
+│   ├── signup/               # Signup page
+│   ├── pricing/              # Subscription plans page
+│   └── page.tsx              # Main app
 ├── components/
-│   ├── ImageStage.tsx   # Image upload & display
-│   ├── ImageCompare.tsx # Before/after slider
+│   ├── ImageStage.tsx        # Image upload & display
+│   ├── ImageCompare.tsx      # Before/after slider
+│   ├── PricingCards.tsx      # Subscription tier cards
 │   ├── PromptComposer.tsx
 │   ├── HistoryPanel.tsx
 │   └── ...
 └── lib/
-    ├── supabase/        # Supabase clients
-    ├── rate-limit.ts    # Rate limiting logic
-    └── aiGateway.ts     # AI API client
+    ├── supabase/             # Supabase clients
+    ├── stripe.ts             # Stripe server client
+    ├── stripe-client.ts      # Stripe client loader
+    ├── rate-limit.ts         # Tiered rate limiting
+    └── aiGateway.ts          # AI API client
 ```
 
 ## Security
 
 - ✅ Server-side authentication on all API routes
 - ✅ Row Level Security (RLS) on all database tables
-- ✅ Rate limiting (10 requests/day per user)
+- ✅ Tiered rate limiting based on subscription status
+- ✅ Stripe webhook signature verification
 - ✅ Input validation (prompt length, image size)
 - ✅ Security headers (X-Frame-Options, CSP)
 - ✅ User-scoped file storage

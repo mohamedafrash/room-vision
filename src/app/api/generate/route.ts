@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { generateText, gateway } from "ai";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { PLANS, PlanId } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
@@ -32,13 +33,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Check rate limit (10 per day)
-    const { success, remaining } = await checkRateLimit(user.id);
+    // 2. Fetch user subscription tier
+    const { data: subscription, error: subscriptionError } = await supabase
+      .from("subscriptions")
+      .select("plan_id, status")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (subscriptionError) {
+      console.error("Failed to load subscription:", subscriptionError);
+    }
+
+    const isActive =
+      subscription?.status === "active" || subscription?.status === "trialing";
+    const isValidPlanId = (value: unknown): value is PlanId =>
+      typeof value === "string" && value in PLANS;
+    const planId: PlanId =
+      isActive && isValidPlanId(subscription?.plan_id)
+        ? subscription.plan_id
+        : "free";
+    const plan = PLANS[planId] ?? PLANS.free;
+
+    // 3. Check rate limit based on subscription tier
+    const { success, remaining } = await checkRateLimit(user.id, plan.id);
     if (!success) {
       return NextResponse.json(
         {
-          error:
-            "Rate limit exceeded. You can generate up to 10 images per day.",
+          error: `Rate limit exceeded. ${plan.name} plan allows ${plan.generationsPerDay} generations per day.`,
+          planId,
+          limit: plan.generationsPerDay,
         },
         { status: 429 },
       );

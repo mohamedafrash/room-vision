@@ -14,11 +14,13 @@ import {
   HistorySkeleton,
 } from "../components/Skeleton";
 import { Toast, ToastType } from "../components/Toast";
+import { UpgradePrompt } from "../components/UpgradePrompt";
 import { generateRoomVisualization } from "../lib/aiGateway";
 import type { GeneratedImage, ProcessingState } from "../lib/types";
 import { downloadImage, fileToBase64 } from "../lib/image";
 import { createClient } from "../lib/supabase/client";
 import { fetchUserHistory, getImageUrl } from "../lib/supabase-history";
+import { PlanId } from "../lib/stripe";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 
@@ -31,6 +33,17 @@ const PROMPT_SUGGESTIONS = [
 
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Something went wrong.";
+
+const isRateLimitError = (error: unknown, errorMessage: string) => {
+  if (error && typeof error === "object") {
+    const maybeError = error as { code?: unknown; isRateLimited?: unknown };
+    if (maybeError.code === "RATE_LIMITED") return true;
+    if (maybeError.isRateLimited === true) return true;
+  }
+
+  const normalized = errorMessage.toLowerCase();
+  return normalized.includes("rate limit") || normalized.includes("rate-limited");
+};
 
 // Toast notification interface
 interface ToastNotification {
@@ -53,6 +66,8 @@ export default function HomePage() {
   >(null);
   const [toast, setToast] = useState<ToastNotification | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [planId, setPlanId] = useState<PlanId>("free");
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const supabase = createClient();
 
   const [status, setStatus] = useState<ProcessingState>({
@@ -100,6 +115,25 @@ export default function HomePage() {
           setHistory(historyWithImages);
         } catch (error) {
           console.error("Failed to load history:", error);
+        }
+
+        // Fetch user subscription
+        try {
+          const { data: subscription } = await supabase
+            .from("subscriptions")
+            .select("plan_id, status")
+            .eq("user_id", user.id)
+            .single();
+          const isActive =
+            subscription?.status === "active" ||
+            subscription?.status === "trialing";
+          if (isActive && subscription?.plan_id) {
+            setPlanId(subscription.plan_id as PlanId);
+          } else {
+            setPlanId("free");
+          }
+        } catch (error) {
+          console.error("Failed to load subscription:", error);
         }
       }
 
@@ -215,6 +249,11 @@ export default function HomePage() {
           error: errorMessage || "Generation failed. Please try again.",
         });
         showToast(errorMessage || "Generation failed", "error");
+
+        // Show upgrade prompt if rate limited
+        if (isRateLimitError(error, errorMessage)) {
+          setShowUpgradePrompt(true);
+        }
       }
     };
 
@@ -313,31 +352,18 @@ export default function HomePage() {
       <div className="noise-layer" />
 
       <div className="app-container">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4 sm:py-6">
+        <div className="py-4 sm:py-6">
           <Header
             onToggleHistory={() => setShowHistory((prev) => !prev)}
             isHistoryVisible={showHistory}
+            planId={planId}
+            onLogout={handleLogout}
           />
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
-            {remainingGenerations !== null && (
-              <span className="text-xs sm:text-sm text-white/60 order-2 sm:order-1">
-                {remainingGenerations} left today
-              </span>
-            )}
-            <span
-              className="hidden sm:block text-sm text-white/80 truncate max-w-[150px]"
-              title={user.email ?? undefined}
-            >
-              {user.email}
-            </span>
-            <Button
-              variant="ghost"
-              onClick={handleLogout}
-              className="order-1 sm:order-3"
-            >
-              Sign out
-            </Button>
-          </div>
+          {remainingGenerations !== null && (
+            <p className="text-xs text-white/60 mt-2">
+              {remainingGenerations} generations remaining today
+            </p>
+          )}
         </div>
 
         <Hero />
@@ -410,6 +436,14 @@ export default function HomePage() {
       {/* Toast notification */}
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={clearToast} />
+      )}
+
+      {/* Upgrade prompt modal */}
+      {showUpgradePrompt && planId !== "unlimited" && (
+        <UpgradePrompt
+          currentPlanId={planId}
+          onClose={() => setShowUpgradePrompt(false)}
+        />
       )}
     </div>
   );

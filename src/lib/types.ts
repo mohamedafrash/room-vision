@@ -1,7 +1,9 @@
 export interface GeneratedImage {
   id: string;
-  originalImageBase64: string;
-  generatedImageBase64: string;
+  originalImageBase64?: string;
+  generatedImageBase64?: string;
+  originalImagePath?: string;
+  generatedImagePath?: string;
   prompt: string;
   timestamp: number;
 }

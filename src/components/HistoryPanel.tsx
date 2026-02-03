@@ -52,14 +52,16 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
               }`}
             >
               <div className="relative aspect-[4/3] bg-black/30">
-                <Image
-                  src={item.generatedImageBase64}
-                  alt={item.prompt}
-                  fill
-                  sizes="(max-width: 1024px) 50vw, 22vw"
-                  className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                  unoptimized
-                />
+                {item.generatedImageBase64 && (
+                  <Image
+                    src={item.generatedImageBase64}
+                    alt={item.prompt}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 22vw"
+                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                    unoptimized
+                  />
+                )}
               </div>
               <div className="space-y-2 px-3 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">

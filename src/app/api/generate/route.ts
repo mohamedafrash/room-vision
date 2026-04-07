@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { generateText, gateway } from "ai";
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { PLANS, PlanId } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
-const DEFAULT_MODEL = "google/gemini-2.5-flash-image";
+const DEFAULT_MODEL = "gemini-3.1-flash-image-preview";
 
 const parseDataUrl = (dataUrl: string) => {
   const match = /^data:(.*?);base64,(.*)$/.exec(dataUrl);
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Validate prompt length and content
+    // 4. Validate prompt length and content
     const MAX_PROMPT_LENGTH = 500;
     if (prompt.length > MAX_PROMPT_LENGTH) {
       return NextResponse.json(
@@ -103,7 +104,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Validate image size (10MB limit)
+    // 5. Validate image size (10MB limit)
     const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
     const { mediaType: originalMediaType, buffer: originalBuffer } =
       parseDataUrl(image);
@@ -115,7 +116,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Upload original image to Supabase Storage
+    // 6. Upload original image to Supabase Storage
     const originalFileName = `original-${user.id}-${Date.now()}.png`;
 
     const { data: originalUploadData, error: originalUploadError } =
@@ -134,10 +135,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const { mediaType, buffer } = parseDataUrl(image);
+    const mediaType = originalMediaType;
+    const buffer = originalBuffer;
 
     const editResult = await generateText({
-      model: gateway(model || DEFAULT_MODEL),
+      model: google(model || DEFAULT_MODEL),
       prompt: [
         {
           role: "user",
@@ -167,7 +169,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Upload generated image to Supabase Storage
+    // 7. Upload generated image to Supabase Storage
     const generatedBuffer = Buffer.from(imageFile.base64, "base64");
     const generatedFileName = `generated-${user.id}-${Date.now()}.png`;
 
@@ -187,7 +189,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Save metadata to database
+    // 8. Save metadata to database
     const { error: dbError } = await supabase.from("generations").insert({
       user_id: user.id,
       original_image_path: originalUploadData.path,
@@ -208,6 +210,7 @@ export async function POST(request: Request) {
       remaining_generations: remaining,
     });
   } catch (error: unknown) {
+    console.error("[/api/generate] Caught error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Generation failed." },
       { status: 500 },

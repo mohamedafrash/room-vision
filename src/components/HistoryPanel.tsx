@@ -1,6 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import type { GeneratedImage } from '../lib/types';
+import React from "react";
+import Image from "next/image";
+import type { GeneratedImage } from "../lib/types";
 
 interface HistoryPanelProps {
   history: GeneratedImage[];
@@ -22,12 +22,18 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
             Archive
           </p>
-          <h3 className="text-lg font-semibold text-white">Your latest scenes</h3>
+          <h3 className="text-lg font-semibold text-white">
+            Your latest scenes
+          </h3>
         </div>
         {onClear && history.length > 0 && (
           <button
             type="button"
-            onClick={onClear}
+            onClick={() => {
+              if (window.confirm("Clear your generation history from view?")) {
+                onClear();
+              }
+            }}
             className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50 hover:text-white"
           >
             Clear
@@ -47,8 +53,8 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
               onClick={() => onSelect(item)}
               className={`group overflow-hidden rounded-2xl border text-left transition ${
                 selectedId === item.id
-                  ? 'border-[#F3B187] shadow-[0_0_0_1px_rgba(243,177,135,0.35)]'
-                  : 'border-white/10 hover:border-white/30'
+                  ? "border-[#F3B187] shadow-[0_0_0_1px_rgba(243,177,135,0.35)]"
+                  : "border-white/10 hover:border-white/30"
               }`}
             >
               <div className="relative aspect-[4/3] bg-black/30">
@@ -59,15 +65,15 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                     fill
                     sizes="(max-width: 1024px) 50vw, 22vw"
                     className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                    unoptimized
+                    unoptimized={item.generatedImageBase64.startsWith("data:")}
                   />
                 )}
               </div>
               <div className="space-y-2 px-3 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
                   {new Date(item.timestamp).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
                 <p className="max-h-[2.6em] overflow-hidden text-sm text-white/80">

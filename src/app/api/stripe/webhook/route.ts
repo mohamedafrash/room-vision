@@ -3,13 +3,13 @@ import { stripe, PLANS } from "@/lib/stripe";
 import { createClient as createServerClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
-// Use service role client for webhook (bypasses RLS)
-const supabaseAdmin = createServerClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!,
-);
-
 export async function POST(request: Request) {
+  // Use service role client for webhook (bypasses RLS). Initialised here so
+  // missing env vars surface as a request-time error rather than at cold start.
+  const supabaseAdmin = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+  );
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
 
@@ -61,22 +61,22 @@ export async function POST(request: Request) {
           const { error: upsertError } = await supabaseAdmin
             .from("subscriptions")
             .upsert(
-            {
-              user_id: userId,
-              stripe_customer_id: subscription.customer as string,
-              stripe_subscription_id: subscription.id,
-              plan_id: planId,
-              status: subscription.status,
-              current_period_start: periodStart
-                ? new Date(periodStart * 1000).toISOString()
-                : null,
-              current_period_end: periodEnd
-                ? new Date(periodEnd * 1000).toISOString()
-                : null,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: "user_id" },
-          );
+              {
+                user_id: userId,
+                stripe_customer_id: subscription.customer as string,
+                stripe_subscription_id: subscription.id,
+                plan_id: planId,
+                status: subscription.status,
+                current_period_start: periodStart
+                  ? new Date(periodStart * 1000).toISOString()
+                  : null,
+                current_period_end: periodEnd
+                  ? new Date(periodEnd * 1000).toISOString()
+                  : null,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: "user_id" },
+            );
           if (upsertError) {
             console.error(
               "Failed to upsert subscription from webhook:",

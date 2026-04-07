@@ -42,7 +42,9 @@ const isRateLimitError = (error: unknown, errorMessage: string) => {
   }
 
   const normalized = errorMessage.toLowerCase();
-  return normalized.includes("rate limit") || normalized.includes("rate-limited");
+  return (
+    normalized.includes("rate limit") || normalized.includes("rate-limited")
+  );
 };
 
 // Toast notification interface
@@ -68,7 +70,7 @@ export default function HomePage() {
   const [retryCount, setRetryCount] = useState(0);
   const [planId, setPlanId] = useState<PlanId>("free");
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [status, setStatus] = useState<ProcessingState>({
     isProcessing: false,
@@ -207,12 +209,19 @@ export default function HomePage() {
           const historyWithImages = await Promise.all(
             userHistory.map(async (item) => {
               if (item.originalImagePath && item.generatedImagePath) {
-                item.originalImageBase64 = await getImageUrl(
-                  item.originalImagePath,
-                );
-                item.generatedImageBase64 = await getImageUrl(
-                  item.generatedImagePath,
-                );
+                try {
+                  item.originalImageBase64 = await getImageUrl(
+                    item.originalImagePath,
+                  );
+                  item.generatedImageBase64 = await getImageUrl(
+                    item.generatedImagePath,
+                  );
+                } catch (urlError) {
+                  console.warn(
+                    "Could not load signed URL for history item:",
+                    urlError,
+                  );
+                }
               }
               return item;
             }),

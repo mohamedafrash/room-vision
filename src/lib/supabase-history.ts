@@ -32,6 +32,13 @@ export async function deleteGeneration(id: string): Promise<void> {
 
 export async function getImageUrl(path: string): Promise<string> {
   const supabase = createClient();
-  const { data } = supabase.storage.from("room-vision").getPublicUrl(path);
-  return data.publicUrl;
+  const { data, error } = await supabase.storage
+    .from("room-vision")
+    .createSignedUrl(path, 3600);
+  if (error || !data?.signedUrl) {
+    throw new Error(
+      `Failed to create signed URL: ${error?.message ?? "unknown"}`,
+    );
+  }
+  return data.signedUrl;
 }

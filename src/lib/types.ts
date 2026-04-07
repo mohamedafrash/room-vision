@@ -10,8 +10,8 @@ export interface GeneratedImage {
 
 export interface ProcessingState {
   isProcessing: boolean;
-  stage: 'idle' | 'uploading' | 'generating' | 'finalizing';
+  stage: "idle" | "uploading" | "generating" | "finalizing";
   error: string | null;
 }
 
-export const GEMINI_MODEL_NAME = 'google/gemini-2.5-flash-image';
+export const GEMINI_MODEL_NAME = "gemini-3.1-flash-image-preview";

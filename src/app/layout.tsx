@@ -1,16 +1,15 @@
-import type { Metadata } from 'next';
-import { DM_Serif_Text, Space_Grotesk } from 'next/font/google';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter, Manrope } from "next/font/google";
+import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space',
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
 });
 
-const dmSerif = DM_Serif_Text({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-serif',
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -40,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} ${dmSerif.variable} antialiased`}>
+      <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         {children}
       </body>
     </html>

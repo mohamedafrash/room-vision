@@ -12,10 +12,10 @@ interface ToastProps {
 }
 
 const toastStyles: Record<ToastType, string> = {
-  success: "bg-green-500/90 border-green-400/30",
-  error: "bg-red-500/90 border-red-400/30",
-  info: "bg-blue-500/90 border-blue-400/30",
-  warning: "bg-amber-500/90 border-amber-400/30",
+  success: "bg-[rgba(33,150,83,0.08)] border-[rgba(33,150,83,0.14)] text-[#17693b]",
+  error: "bg-[rgba(186,26,26,0.08)] border-[rgba(186,26,26,0.12)] text-[#93000a]",
+  info: "bg-[rgba(0,91,111,0.08)] border-[rgba(0,91,111,0.12)] text-[var(--rv-primary)]",
+  warning: "bg-[rgba(91,50,0,0.08)] border-[rgba(91,50,0,0.14)] text-[var(--rv-tertiary)]",
 };
 
 const toastIcons: Record<ToastType, React.ReactNode> = {
@@ -107,8 +107,8 @@ export function Toast({
   return (
     <div
       className={`
-        fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-full border px-5 py-3
-        text-white shadow-lg backdrop-blur-sm transition-all duration-300
+        fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl border px-5 py-3
+        shadow-lg backdrop-blur-sm transition-all duration-300
         ${toastStyles[type]}
         ${isLeaving ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"}
       `}

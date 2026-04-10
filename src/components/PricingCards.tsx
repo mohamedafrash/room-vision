@@ -114,7 +114,7 @@ export function PricingCards({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 max-w-5xl mx-auto items-stretch">
+    <div className="mx-auto flex max-w-5xl flex-col items-stretch gap-6 lg:flex-row">
       {PRICING_DATA.map((plan) => {
         const isCurrent = plan.id === currentPlanId;
         const isDowngrade =
@@ -125,27 +125,28 @@ export function PricingCards({
         return (
           <div
             key={plan.id}
-            className={`relative flex-1 rounded-3xl p-[1px] transition-all duration-300 ${
+            className={`relative flex-1 rounded-[28px] transition-all duration-300 ${
               isCurrent
-                ? "bg-gradient-to-b from-[#E97B46] to-[#E97B46]/30"
+                ? "bg-[rgba(0,91,111,0.1)]"
                 : isPopular
-                  ? "bg-gradient-to-b from-white/30 to-white/5"
-                  : "bg-white/10"
+                  ? "bg-white"
+                  : "bg-[var(--rv-surface-low)]"
             }`}
           >
             <div
-              className={`h-full rounded-3xl p-8 backdrop-blur-xl ${
-                isCurrent ? "bg-[#1a1a2e]" : "bg-[#0d0d14]/90"
+              className={`h-full rounded-[28px] p-8 ${
+                isCurrent
+                  ? "bg-white shadow-[0_28px_60px_rgba(0,91,111,0.12)]"
+                  : "bg-[rgba(255,255,255,0.9)] shadow-[0_20px_44px_rgba(25,28,29,0.05)]"
               }`}
             >
-              {/* Badge */}
               {(isPopular || isCurrent) && (
                 <div className="absolute -top-3 left-6">
                   <span
-                    className={`inline-block px-4 py-1.5 text-xs font-semibold rounded-full ${
+                    className={`inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] ${
                       isCurrent
-                        ? "bg-[#E97B46] text-white"
-                        : "bg-white/10 text-white/80 backdrop-blur-sm border border-white/20"
+                        ? "bg-[var(--rv-primary)] text-white"
+                        : "bg-[var(--rv-primary-soft)] text-[var(--rv-primary)]"
                     }`}
                   >
                     {isCurrent ? "Your Plan" : "Most Popular"}
@@ -153,35 +154,28 @@ export function PricingCards({
                 </div>
               )}
 
-              {/* Plan name */}
-              <p className="text-sm font-medium text-white/50 uppercase tracking-widest mt-4">
+              <p className="mt-4 text-sm font-medium uppercase tracking-widest text-[var(--rv-text-soft)]">
                 {plan.name}
               </p>
 
-              {/* Price */}
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-sm text-white/60">$</span>
-                <span className="text-6xl font-bold text-white tracking-tight">
+                <span className="text-sm text-[var(--rv-text-soft)]">$</span>
+                <span className="font-[family-name:var(--font-display)] text-6xl font-extrabold tracking-[-0.05em] text-[var(--rv-text)]">
                   {plan.price}
                 </span>
-                <span className="text-white/40 ml-1">/ {plan.period}</span>
+                <span className="ml-1 text-[var(--rv-text-soft)]">/ {plan.period}</span>
               </div>
 
-              {/* Description */}
-              <p className="mt-4 text-sm text-white/50 leading-relaxed">
+              <p className="mt-4 text-sm leading-relaxed text-[var(--rv-text-muted)]">
                 {plan.description}
               </p>
 
-              {/* Divider */}
-              <div className="my-8 h-px bg-white/10" />
-
-              {/* Features */}
               <ul className="space-y-4">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#E97B46]/20 flex items-center justify-center">
+                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--rv-primary-soft)]">
                       <svg
-                        className="w-3 h-3 text-[#E97B46]"
+                        className="h-3 w-3 text-[var(--rv-primary)]"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -194,12 +188,11 @@ export function PricingCards({
                         />
                       </svg>
                     </div>
-                    <span className="text-sm text-white/70">{feature}</span>
+                    <span className="text-sm text-[var(--rv-text-muted)]">{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              {/* CTA Button */}
               <button
                 onClick={() =>
                   hasActiveSubscription && plan.id !== "free"
@@ -209,16 +202,16 @@ export function PricingCards({
                 disabled={
                   loading === plan.id || (plan.id === "free" && isCurrent)
                 }
-                className={`mt-10 w-full py-4 px-6 rounded-2xl font-semibold text-sm transition-all duration-200 cursor-pointer ${
+                className={`mt-10 w-full rounded-2xl px-6 py-4 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                   isCurrent
                     ? plan.id === "free"
-                      ? "bg-white/5 text-white/30 cursor-not-allowed"
-                      : "bg-white/10 text-white hover:bg-white/15 ring-1 ring-white/10"
+                      ? "bg-[var(--rv-surface-low)] text-[var(--rv-text-soft)] cursor-not-allowed"
+                      : "bg-[var(--rv-surface-low)] text-[var(--rv-text)] hover:bg-[var(--rv-surface-high)]"
                     : hasActiveSubscription && plan.id !== "free"
-                      ? "bg-white/10 text-white hover:bg-white/15 ring-1 ring-white/10"
+                      ? "bg-[var(--rv-surface-low)] text-[var(--rv-text)] hover:bg-[var(--rv-surface-high)]"
                       : isDowngrade
-                        ? "bg-white/5 text-white/50 hover:bg-white/10 ring-1 ring-white/10"
-                        : "bg-[#E97B46] text-white hover:bg-[#F08A59] shadow-lg shadow-[#E97B46]/20"
+                        ? "bg-[var(--rv-surface-low)] text-[var(--rv-text-muted)] hover:bg-[var(--rv-surface-high)]"
+                        : "bg-gradient-to-br from-[var(--rv-primary)] to-[var(--rv-primary-strong)] text-white shadow-[0_18px_40px_rgba(0,91,111,0.24)] hover:scale-[0.99]"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {loading === plan.id ? (

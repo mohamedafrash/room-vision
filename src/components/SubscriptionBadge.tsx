@@ -17,10 +17,11 @@ export function SubscriptionBadge({
   const element = as ?? (onClick ? "button" : "span");
 
   const colorClasses: Record<PlanId, string> = {
-    free: "bg-gray-500/20 text-gray-300 border-gray-500/30",
-    pro: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
+    free:
+      "bg-[var(--rv-surface-low)] text-[var(--rv-text-muted)] border-[rgba(191,200,204,0.28)]",
+    pro: "bg-[var(--rv-primary-soft)] text-[var(--rv-primary)] border-[rgba(0,91,111,0.18)]",
     unlimited:
-      "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30",
+      "bg-[rgba(91,50,0,0.08)] text-[var(--rv-tertiary)] border-[rgba(91,50,0,0.16)]",
   };
 
   if (element === "span") {

@@ -51,12 +51,12 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl border border-white/10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(25,28,29,0.25)] p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-[28px] bg-white p-8 shadow-[0_32px_72px_rgba(25,28,29,0.12)]">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/20 flex items-center justify-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(0,91,111,0.12)]">
             <svg
-              className="w-8 h-8 text-amber-400"
+              className="h-8 w-8 text-[var(--rv-primary)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -70,20 +70,20 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="mb-2 font-[family-name:var(--font-display)] text-2xl font-extrabold text-[var(--rv-text)]">
             You&apos;ve hit your daily limit!
           </h2>
-          <p className="text-gray-400">
+          <p className="text-[var(--rv-text-muted)]">
             Your {currentPlan.name} plan allows {currentPlan.generationsPerDay}{" "}
             generations per day.
           </p>
         </div>
 
-        <div className="mt-6 p-4 bg-white/5 rounded-xl border border-indigo-500/30">
+        <div className="mt-6 rounded-[20px] bg-[var(--rv-surface-low)] p-4">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="font-semibold text-white">{upgradePlan.name}</h3>
-              <p className="text-sm text-gray-400">
+              <h3 className="font-semibold text-[var(--rv-text)]">{upgradePlan.name}</h3>
+              <p className="text-sm text-[var(--rv-text-muted)]">
                 {upgradePlan.generationsPerDay === Infinity
                   ? "Unlimited"
                   : upgradePlan.generationsPerDay}{" "}
@@ -91,10 +91,10 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">
+              <div className="text-2xl font-bold text-[var(--rv-text)]">
                 ${upgradePlanId === "pro" ? "9" : "29"}
               </div>
-              <div className="text-xs text-gray-400">/month</div>
+              <div className="text-xs text-[var(--rv-text-soft)]">/month</div>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
           <button
             onClick={handleUpgrade}
             disabled={loading !== null}
-            className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-500 hover:to-purple-500 transition-all disabled:opacity-50"
+            className="w-full rounded-2xl bg-gradient-to-br from-[var(--rv-primary)] to-[var(--rv-primary-strong)] px-4 py-3 font-semibold text-white transition-all hover:scale-[0.99] disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -133,14 +133,14 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
           {onClose && (
             <button
               onClick={onClose}
-              className="w-full py-3 px-4 bg-white/5 text-gray-400 font-medium rounded-xl hover:bg-white/10 transition-all"
+              className="w-full rounded-2xl bg-[var(--rv-surface-low)] px-4 py-3 font-medium text-[var(--rv-text-muted)] transition-all hover:bg-[var(--rv-surface-high)]"
             >
               Maybe later
             </button>
           )}
         </div>
 
-        <p className="mt-4 text-center text-xs text-gray-500">
+        <p className="mt-4 text-center text-xs text-[var(--rv-text-soft)]">
           Cancel anytime. Secure payment via Stripe.
         </p>
       </div>

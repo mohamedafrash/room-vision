@@ -16,15 +16,15 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-60";
+    "inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-60";
 
   const variants = {
     primary:
-      "bg-[#E97B46] text-white shadow-[0_10px_30px_rgba(231,123,70,0.3)] hover:bg-[#F08A59] focus-visible:ring-[#E97B46]",
+      "bg-gradient-to-br from-[var(--rv-primary)] to-[var(--rv-primary-strong)] text-white shadow-[0_18px_40px_rgba(0,91,111,0.24)] hover:scale-[0.99] focus-visible:ring-[var(--rv-primary)]",
     secondary:
-      "bg-black/70 text-white hover:bg-black focus-visible:ring-white/40",
+      "bg-[var(--rv-surface-low)] text-[var(--rv-text)] hover:bg-[var(--rv-surface-high)] focus-visible:ring-[var(--rv-primary)]",
     ghost:
-      "bg-transparent text-white/80 hover:bg-white/10 focus-visible:ring-white/40",
+      "bg-transparent text-[var(--rv-primary)] hover:bg-[var(--rv-surface-low)] focus-visible:ring-[var(--rv-primary)]",
   };
 
   return (
@@ -34,7 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading && (
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
       )}
       {!isLoading && icon}
       <span>{children}</span>

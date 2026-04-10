@@ -33,7 +33,7 @@ export function CancelSubscriptionButton() {
     <button
       onClick={handleManageBilling}
       disabled={loading}
-      className="px-6 py-3 text-sm font-medium text-white/70 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all cursor-pointer disabled:opacity-50"
+      className="cursor-pointer rounded-2xl bg-[var(--rv-surface-low)] px-6 py-3 text-sm font-medium text-[var(--rv-text-muted)] transition-all hover:bg-[var(--rv-surface-high)] hover:text-[var(--rv-text)] disabled:opacity-50"
     >
       {loading ? (
         <span className="flex items-center gap-2">

@@ -17,7 +17,7 @@ const PRICING_DATA = [
     period: "month",
     description: "Perfect for trying out Room Vision",
     features: [
-      "10 AI generations per day",
+      "10 AI generations per month",
       "Basic room redesign",
       "Generation history",
     ],
@@ -30,7 +30,7 @@ const PRICING_DATA = [
     period: "month",
     description: "For design enthusiasts who want more",
     features: [
-      "100 AI generations per day",
+      "100 AI generations per month",
       "Priority processing",
       "High-quality outputs",
       "Email support",
@@ -40,18 +40,18 @@ const PRICING_DATA = [
   },
   {
     id: "unlimited" as const,
-    name: "Unlimited",
+    name: "Studio",
     price: "29",
     period: "month",
     description: "For professionals & agencies",
     features: [
-      "Unlimited generations",
+      "500 AI generations per month",
       "Fastest processing",
       "Commercial license",
       "Priority support",
       "API access (coming soon)",
     ],
-    cta: "Go Unlimited",
+    cta: "Upgrade to Studio",
   },
 ];
 
@@ -118,8 +118,8 @@ export function PricingCards({
       {PRICING_DATA.map((plan) => {
         const isCurrent = plan.id === currentPlanId;
         const isDowngrade =
-          PLANS[plan.id].generationsPerDay <
-          PLANS[currentPlanId].generationsPerDay;
+          PLANS[plan.id].generationsPerMonth <
+          PLANS[currentPlanId].generationsPerMonth;
         const isPopular = "popular" in plan && plan.popular;
 
         return (

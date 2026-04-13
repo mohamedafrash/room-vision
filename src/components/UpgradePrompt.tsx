@@ -71,11 +71,11 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
           </div>
 
           <h2 className="mb-2 font-[family-name:var(--font-display)] text-2xl font-extrabold text-[var(--rv-text)]">
-            You&apos;ve hit your daily limit!
+            You&apos;ve hit your monthly limit!
           </h2>
           <p className="text-[var(--rv-text-muted)]">
-            Your {currentPlan.name} plan allows {currentPlan.generationsPerDay}{" "}
-            generations per day.
+            Your {currentPlan.name} plan allows {currentPlan.generationsPerMonth}{" "}
+            generations per month.
           </p>
         </div>
 
@@ -84,10 +84,7 @@ export function UpgradePrompt({ currentPlanId, onClose }: UpgradePromptProps) {
             <div>
               <h3 className="font-semibold text-[var(--rv-text)]">{upgradePlan.name}</h3>
               <p className="text-sm text-[var(--rv-text-muted)]">
-                {upgradePlan.generationsPerDay === Infinity
-                  ? "Unlimited"
-                  : upgradePlan.generationsPerDay}{" "}
-                generations/day
+                {upgradePlan.generationsPerMonth} generations/month
               </p>
             </div>
             <div className="text-right">

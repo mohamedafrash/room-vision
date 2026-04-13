@@ -27,20 +27,20 @@ const PLANS = [
     name: "Free",
     price: "$0",
     caption: "For casual explorers",
-    features: ["10 generations / day", "Generation history", "Core room redesign"],
+    features: ["10 generations / month", "Generation history", "Core room redesign"],
   },
   {
     name: "Pro",
     price: "$9",
     caption: "For active redesign work",
-    features: ["100 generations / day", "Priority processing", "Higher fidelity exports"],
+    features: ["100 generations / month", "Priority processing", "Higher fidelity exports"],
     featured: true,
   },
   {
-    name: "Unlimited",
+    name: "Studio",
     price: "$29",
     caption: "For studios and agencies",
-    features: ["Unlimited generations", "Fastest queue", "Commercial usage"],
+    features: ["500 generations / month", "Fastest queue", "Commercial usage"],
   },
 ];
 

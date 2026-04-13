@@ -60,9 +60,9 @@ export async function POST(request: Request) {
     if (!success) {
       return NextResponse.json(
         {
-          error: `Rate limit exceeded. ${plan.name} plan allows ${plan.generationsPerDay} generations per day.`,
+          error: `Rate limit exceeded. ${plan.name} plan allows ${plan.generationsPerMonth} generations per month.`,
           planId,
-          limit: plan.generationsPerDay,
+          limit: plan.generationsPerMonth,
         },
         { status: 429 },
       );

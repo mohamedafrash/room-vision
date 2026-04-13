@@ -39,19 +39,19 @@ export const PLANS = {
   free: {
     id: "free",
     name: "Free",
-    generationsPerDay: 10,
+    generationsPerMonth: 10,
     priceId: null,
   },
   pro: {
     id: "pro",
     name: "Pro",
-    generationsPerDay: 100,
+    generationsPerMonth: 100,
     priceId: process.env.STRIPE_PRO_PRICE_ID || null,
   },
   unlimited: {
     id: "unlimited",
-    name: "Unlimited",
-    generationsPerDay: Infinity,
+    name: "Studio",
+    generationsPerMonth: 500,
     priceId: process.env.STRIPE_UNLIMITED_PRICE_ID || null,
   },
 } as const;

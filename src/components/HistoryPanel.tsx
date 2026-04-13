@@ -16,13 +16,13 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
   onClear,
 }) => {
   return (
-    <section className="glass-card flex flex-col gap-4 p-5">
+    <section className="glass-card rv-outline flex flex-col gap-4 p-5">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--rv-text-soft)]">
             Archive
           </p>
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--rv-text)]">
             Your latest scenes
           </h3>
         </div>
@@ -34,14 +34,14 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                 onClear();
               }
             }}
-            className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50 hover:text-white"
+            className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rv-text-soft)] hover:text-[var(--rv-primary)]"
           >
             Clear
           </button>
         )}
       </div>
       {history.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/20 px-4 py-6 text-center text-sm text-white/60">
+        <div className="rounded-2xl border border-dashed border-[rgba(191,200,204,0.28)] bg-[var(--rv-surface-low)] px-4 py-6 text-center text-sm text-[var(--rv-text-muted)]">
           Start a render to build your before/after gallery.
         </div>
       ) : (
@@ -51,13 +51,13 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
               key={item.id}
               type="button"
               onClick={() => onSelect(item)}
-              className={`group overflow-hidden rounded-2xl border text-left transition ${
+              className={`group overflow-hidden rounded-[22px] bg-white text-left shadow-[0_18px_36px_rgba(25,28,29,0.05)] transition ${
                 selectedId === item.id
-                  ? "border-[#F3B187] shadow-[0_0_0_1px_rgba(243,177,135,0.35)]"
-                  : "border-white/10 hover:border-white/30"
+                  ? "ring-2 ring-[var(--rv-primary)]"
+                  : "hover:-translate-y-0.5"
               }`}
             >
-              <div className="relative aspect-[4/3] bg-black/30">
+              <div className="relative aspect-[4/3] bg-[var(--rv-surface-low)]">
                 {item.generatedImageBase64 && (
                   <Image
                     src={item.generatedImageBase64}
@@ -70,13 +70,13 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                 )}
               </div>
               <div className="space-y-2 px-3 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--rv-text-soft)]">
                   {new Date(item.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </p>
-                <p className="max-h-[2.6em] overflow-hidden text-sm text-white/80">
+                <p className="max-h-[2.6em] overflow-hidden text-sm text-[var(--rv-text-muted)]">
                   {item.prompt}
                 </p>
               </div>

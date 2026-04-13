@@ -16,8 +16,8 @@
 - 📱 **Mobile Optimized** – Responsive design with touch-friendly controls
 - 🔐 **Secure Authentication** – Google OAuth & email/password via Supabase
 - 📊 **Generation History** – All your designs saved and accessible
-- 💳 **Subscription Plans** – Free, Pro, and Unlimited tiers via Stripe
-- ⚡ **Tiered Rate Limiting** – Free: 10/day, Pro: 100/day, Unlimited: ∞
+- 💳 **Subscription Plans** – Free, Pro, and Studio tiers via Stripe
+- ⚡ **Tiered Rate Limiting** – Free: 10/month, Pro: 100/month, Studio: 500/month
 
 ## Tech Stack
 
@@ -92,11 +92,11 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ## Subscription Plans
 
-| Plan      | Price     | Generations/Day |
+| Plan      | Price     | Generations/Month |
 | --------- | --------- | --------------- |
 | Free      | $0/month  | 10              |
 | Pro       | $9/month  | 100             |
-| Unlimited | $29/month | Unlimited       |
+| Studio    | $29/month | 500             |
 
 ## Project Structure
 

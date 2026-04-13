@@ -15,13 +15,13 @@ import {
 } from "../components/Skeleton";
 import { Toast, ToastType } from "../components/Toast";
 import { UpgradePrompt } from "../components/UpgradePrompt";
+import { LandingPage } from "@/components/marketing/LandingPage";
 import { generateRoomVisualization } from "../lib/aiGateway";
 import type { GeneratedImage, ProcessingState } from "../lib/types";
 import { downloadImage, fileToBase64 } from "../lib/image";
 import { createClient } from "../lib/supabase/client";
 import { fetchUserHistory, getImageUrl } from "../lib/supabase-history";
 import { PlanId } from "../lib/stripe";
-import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 
 const PROMPT_SUGGESTIONS = [
@@ -303,8 +303,8 @@ export default function HomePage() {
         <div className="noise-layer" />
         <div className="app-container">
           <div className="flex items-center justify-between py-4 sm:py-6">
-            <div className="h-8 w-32 animate-pulse rounded-lg bg-white/10" />
-            <div className="h-8 w-24 animate-pulse rounded-lg bg-white/10" />
+            <div className="h-8 w-32 animate-pulse rounded-lg bg-[var(--rv-surface-high)]" />
+            <div className="h-8 w-24 animate-pulse rounded-lg bg-[var(--rv-surface-high)]" />
           </div>
           <div className="h-16 sm:h-20 mb-6" />
           <main className="grid gap-4 sm:gap-6 lg:grid-cols-[1.25fr_0.75fr]">
@@ -322,36 +322,7 @@ export default function HomePage() {
   }
 
   if (!user) {
-    return (
-      <div className="app-shell">
-        <div className="glow-orb orb-left" />
-        <div className="glow-orb orb-right" />
-        <div className="noise-layer" />
-
-        <div className="app-container">
-          <div className="min-h-screen flex flex-col items-center justify-center text-center space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl font-bold text-white">Room Vision</h1>
-              <p className="text-xl text-white/70 max-w-md">
-                Transform your space with AI-powered interior design. Sign in to
-                start creating.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/login">
-                <Button className="px-8 py-4 text-base">Sign In</Button>
-              </Link>
-              <Link href="/signup">
-                <Button variant="secondary" className="px-8 py-4 text-base">
-                  Create Account
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LandingPage />;
   }
 
   return (
@@ -369,13 +340,19 @@ export default function HomePage() {
             onLogout={handleLogout}
           />
           {remainingGenerations !== null && (
-            <p className="text-xs text-white/60 mt-2">
+            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--rv-text-soft)]">
               {remainingGenerations} generations remaining today
             </p>
           )}
         </div>
 
         <Hero />
+
+        {status.error && (
+          <div className="mb-6 rounded-[24px] bg-[rgba(186,26,26,0.08)] px-5 py-4 text-sm text-[#93000a] shadow-[0_12px_24px_rgba(186,26,26,0.08)]">
+            {status.error}
+          </div>
+        )}
 
         <ErrorBoundary>
           <main className="grid gap-4 sm:gap-6 lg:grid-cols-[1.25fr_0.75fr]">
@@ -409,11 +386,11 @@ export default function HomePage() {
                       selectedId={selectedId}
                       onClear={() => setHistory([])}
                     />
-                    <section className="glass-card space-y-3 p-4 sm:p-5">
-                      <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white/60">
+                    <section className="glass-card rv-outline space-y-3 p-4 sm:p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--rv-text-soft)] sm:text-sm sm:tracking-[0.2em]">
                         Export
                       </p>
-                      <p className="text-xs sm:text-sm text-white/70">
+                      <p className="text-xs text-[var(--rv-text-muted)] sm:text-sm">
                         Download your final image or iterate with a fresh
                         prompt.
                       </p>

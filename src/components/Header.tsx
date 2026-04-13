@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "./Button";
 import { SubscriptionBadge } from "./SubscriptionBadge";
 import { PlanId } from "@/lib/stripe";
+import { RoomVisionLogo } from "@/components/brand/RoomVisionLogo";
 
 interface HeaderProps {
   onToggleHistory: () => void;
@@ -20,37 +21,30 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
 }) => {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 py-6">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20">
-          <svg
-            className="h-5 w-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+    <header className="rv-frame rv-outline sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-5">
+      <div className="flex items-center gap-8">
+        <RoomVisionLogo />
+        <nav className="hidden items-center gap-6 text-sm font-medium text-[var(--rv-text-muted)] md:flex">
+          <span className="border-b-2 border-[var(--rv-primary)] pb-1 font-semibold text-[var(--rv-primary)]">
+            Dashboard
+          </span>
+          <button
+            type="button"
+            onClick={onToggleHistory}
+            className="transition hover:text-[var(--rv-primary)]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 11l8-7 8 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2v-4H9v4a2 2 0 01-2 2H3a2 2 0 01-2-2z"
-            />
-          </svg>
-        </div>
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50">
-            RoomVision
-          </p>
-          <h1 className="text-lg font-semibold text-white">
-            Interior AI Studio
-          </h1>
-        </div>
+            {isHistoryVisible ? "Hide archive" : "Show archive"}
+          </button>
+          <Link href="/pricing" className="transition hover:text-[var(--rv-primary)]">
+            Pricing
+          </Link>
+        </nav>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Link href="/pricing">
           <SubscriptionBadge planId={planId} as="span" />
         </Link>
-        <Button variant="ghost" onClick={onToggleHistory}>
+        <Button variant="secondary" onClick={onToggleHistory} className="md:hidden">
           {isHistoryVisible ? "Hide archive" : "Show archive"}
         </Button>
         {planId === "free" && (

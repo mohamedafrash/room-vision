@@ -42,12 +42,12 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
   };
 
   return (
-    <section className="glass-card space-y-3 sm:space-y-4 p-4 sm:p-5">
+    <section className="glass-card rv-outline space-y-3 p-4 sm:space-y-4 sm:p-5">
       <div>
-        <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white/60">
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--rv-text-soft)] sm:text-sm sm:tracking-[0.2em]">
           Direction
         </p>
-        <h3 className="text-lg sm:text-xl font-semibold text-white">
+        <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--rv-text)] sm:text-xl">
           Describe the transformation
         </h3>
       </div>
@@ -61,16 +61,14 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
             onKeyDown={handleKeyDown}
             placeholder="Try: 'Switch to warm walnut floors, add linen curtains, soft morning light.'"
             rows={3}
-            className="w-full rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white placeholder:text-white/40 focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 resize-none"
+            className="w-full resize-none rounded-2xl border border-[rgba(191,200,204,0.18)] bg-[var(--rv-white)] px-3 py-2.5 text-sm text-[var(--rv-text)] placeholder:text-[var(--rv-text-soft)] focus:border-[var(--rv-primary)] focus:outline-none focus:ring-4 focus:ring-[rgba(180,235,255,0.45)] sm:rounded-3xl sm:px-4 sm:py-3"
             disabled={disabled}
           />
-          {/* Character count indicator */}
-          <span className="absolute bottom-2 right-3 text-[10px] text-white/30">
+          <span className="absolute bottom-2 right-3 text-[10px] text-[var(--rv-text-soft)]">
             {prompt.length}/500
           </span>
         </div>
 
-        {/* Suggestions - horizontal scroll on mobile */}
         <div className="relative -mx-4 sm:mx-0 px-4 sm:px-0">
           <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap scrollbar-hide">
             {suggestions.map((item) => (
@@ -79,7 +77,7 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
                 type="button"
                 onClick={() => handleSuggestionClick(item)}
                 disabled={disabled}
-                className="flex-shrink-0 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-[11px] sm:text-xs font-medium text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-shrink-0 rounded-full bg-[var(--rv-surface-low)] px-3 py-1.5 text-[11px] font-medium text-[var(--rv-text-muted)] transition hover:bg-[var(--rv-surface-high)] hover:text-[var(--rv-primary)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:text-xs"
               >
                 {item}
               </button>
@@ -97,7 +95,7 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
         >
           Generate variation
         </Button>
-        <span className="hidden sm:block text-xs text-white/40">
+        <span className="hidden text-xs text-[var(--rv-text-soft)] sm:block">
           or press ⌘ + Enter
         </span>
       </div>
